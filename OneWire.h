@@ -16,6 +16,8 @@
 #include "pins_arduino.h"  // for digitalPinToBitMask, etc
 #endif
 
+#define TIMING_C 1.2-10
+#define TIMING_B (1.0)
 // You can exclude certain features from OneWire.  In theory, this
 // might save some space.  In practice, the compiler automatically
 // removes unused code (technically, the linker, using -fdata-sections

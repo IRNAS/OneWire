@@ -174,20 +174,21 @@ uint8_t OneWire::reset(void)
 	// wait until the wire is high... just in case
 	do {
 		if (--retries == 0) return 0;
-		delayMicroseconds(2);
+		delayMicroseconds(2*TIMING_C);
 	} while ( !DIRECT_READ(reg, mask));
 
 	noInterrupts();
-	DIRECT_WRITE_LOW(reg, mask);
+
 	DIRECT_MODE_OUTPUT(reg, mask);	// drive output low
+		DIRECT_WRITE_LOW(reg, mask);
 	interrupts();
 	delayMicroseconds(480);
 	noInterrupts();
 	DIRECT_MODE_INPUT(reg, mask);	// allow it to float
-	delayMicroseconds(70);
+	delayMicroseconds(70*TIMING_C);
 	r = !DIRECT_READ(reg, mask);
 	interrupts();
-	delayMicroseconds(410);
+	delayMicroseconds(200*TIMING_C);
 	return r;
 }
 
@@ -202,17 +203,17 @@ void OneWire::write_bit(uint8_t v)
 
 	if (v & 1) {
 		noInterrupts();
-		DIRECT_WRITE_LOW(reg, mask);
 		DIRECT_MODE_OUTPUT(reg, mask);	// drive output low
-		delayMicroseconds(10);
+		DIRECT_WRITE_LOW(reg, mask);
+		delayMicroseconds(5);
 		DIRECT_WRITE_HIGH(reg, mask);	// drive output high
 		interrupts();
-		delayMicroseconds(55);
+		delayMicroseconds(30);
 	} else {
 		noInterrupts();
-		DIRECT_WRITE_LOW(reg, mask);
 		DIRECT_MODE_OUTPUT(reg, mask);	// drive output low
-		delayMicroseconds(65);
+		DIRECT_WRITE_LOW(reg, mask);
+		delayMicroseconds(30);
 		DIRECT_WRITE_HIGH(reg, mask);	// drive output high
 		interrupts();
 		delayMicroseconds(5);
@@ -232,12 +233,12 @@ uint8_t OneWire::read_bit(void)
 	noInterrupts();
 	DIRECT_MODE_OUTPUT(reg, mask);
 	DIRECT_WRITE_LOW(reg, mask);
-	delayMicroseconds(3);
+	delayMicroseconds(1);
 	DIRECT_MODE_INPUT(reg, mask);	// let pin float, pull up will raise
-	delayMicroseconds(10);
+	//delayMicroseconds(40);
 	r = DIRECT_READ(reg, mask);
 	interrupts();
-	delayMicroseconds(53);
+	delayMicroseconds(30);
 	return r;
 }
 
